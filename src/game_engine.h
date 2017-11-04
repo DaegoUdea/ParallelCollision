@@ -22,7 +22,7 @@ class GameEngine {
 
     void execute();
     void input();
-    void update();
+    void update(float deltaTime);
     void render();
 
     bool running() { return !exit; }
@@ -51,7 +51,7 @@ class GameEngine {
     SDL_Texture* fpsTexture;
 
     int countedFrames;
-    int fps;
+    float fps;
     std::stringstream fpsText;
 
 

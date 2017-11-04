@@ -17,7 +17,7 @@ class InitState : public GameState {
     void reset();
 
     void input(GameEngine* game);
-    void update(GameEngine* game);
+    void update(GameEngine* game, float deltaTime);
     void render(GameEngine* game);
 
     static InitState* Instance() { return &m_initstate; }
@@ -27,10 +27,12 @@ class InitState : public GameState {
 
  private:
     static InitState m_initstate;
+    SDL_Texture* circle_texture;
     Circle player;
+    Circle circle_obstacle1;
+    Circle circle_obstacle2;
 
     bool exit;
 };
-
 
 #endif  // SRC_INISTATE_H_

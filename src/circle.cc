@@ -1,53 +1,72 @@
 #include "circle.h";
+#include "vector2.h"
 
 Circle::Circle() {
   init();
 }
 
-void Circle::move() {
-
-  x = x + vx;
-  y = y + vy;
-}
-
 void Circle::init() {
-  width = height = r = 20;
-  x = old_x = 0;
-  y = old_y = 0;
-  vx = 0;
-  vy = 0;
+  texture = NULL;
+  position = new Vector2();
+  velocity = new Vector2();
+
+  position->setX(0);
+  position->setY(0);
+
+  velocity->setX(0);
+  velocity->setY(0);
+
+  width = 0;
+  height = 0;
 }
 
-void Circle::setRadius(int radius) {
-  r = width = height = radius;
+void Circle::move(float deltaTime) {
+   position->setX(position->getX() + (velocity->getX() * deltaTime));
+   position->setY(position->getY() + (velocity->getY() * deltaTime));
 }
 
-int Circle::getRadius() {
-  return r;
+void Circle::setDimension(int width, int height) {
+  this->width = width;
+  this->height = height;
 }
 
-int Circle::getX() {
-  return x;
+// Setters
+void Circle::setPosition(Vector2* position) {
+    this->position = position;
 }
 
-int Circle::getY() {
-  return y;
+void Circle::setWidth(int width) {
+  this->width = width;
+}
+void Circle::setHeight(int height) {
+  this->height = height;
 }
 
-void Circle::setPosition(int new_x, int new_y) {
-  x = new_x;
-  y = new_y;
+void Circle::setVelocity(Vector2* velocity) {
+  this->velocity = velocity;
 }
 
-void Circle::setVelocity(int new_vx, int new_vy) {
-  vx = new_vx;
-  vy = new_vy;
+void Circle::setTexture(SDL_Texture* texture) {
+  this->texture = texture;
 }
 
-void Circle::setTexture(SDL_Texture* tex) {
-  texCircle = tex;
+// Getters
+Vector2* Circle::getPosition() {
+  return position;
+}
+
+Vector2* Circle::getVelocity() {
+  return velocity;
+}
+
+int Circle::getWidth(int width) {
+  return width;
+}
+
+int Circle::getHeight(int height) {
+  return height;
 }
 
 SDL_Texture* Circle::getTexture() {
-  return texCircle;
+  return texture;
 }

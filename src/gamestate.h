@@ -12,7 +12,7 @@ class GameState {
     virtual void resume() = 0;
 
     virtual void input(GameEngine* game) = 0;
-    virtual void update(GameEngine* game) = 0;
+    virtual void update(GameEngine* game, float deltaTime) = 0;
     virtual void render(GameEngine* game) = 0;
 
     void change_state(GameEngine* game, GameState* state) {
@@ -23,4 +23,4 @@ class GameState {
     GameState() { }
 };
 
-#endif
+#endif // SRC_GAMESTATE_H_

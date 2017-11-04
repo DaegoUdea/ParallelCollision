@@ -3,44 +3,39 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "gameobject.h"
+#include "vector2.h"
 
+class Circle : public GameObject {
+public:
+  Circle();
 
-class Circle {
- public:
-    Circle();
+  void init();
+  void move(float deltaTime);
+  void setDimension(int width, int height);
 
-    void move();
-    void init();
-    void setPosition(int new_x, int new_y);
-    void setVelocity(int new_vx, int new_vy);
-    void setRadius(int radius);
-    void setTexture(SDL_Texture* tex);
-    int getRadius();
-    int getX();
-    int getY();
-    SDL_Texture* getTexture();
+  // Setters
+  void setPosition(Vector2* position);
+  void setWidth(int width);
+  void setHeight(int height);
+  void setVelocity(Vector2* velocity);
+  void setTexture(SDL_Texture* texture);
 
-    // Texture
-    SDL_Texture* texCircle;
+  // Getters
+  Vector2* getPosition();
+  Vector2* getVelocity();
+  int getWidth(int width);
+  int getHeight(int height);
+  SDL_Texture* getTexture();
 
-    // positions.
-    int x;
-    int y;
+private:
+  SDL_Texture* texture;
 
-    // Dimensions.
-    int width;
-    int height;
-    int r;
+  Vector2* position;
+  Vector2* velocity;
 
-    // old positions.
-    int old_x;
-    int old_y;
-
-    // Velocity
-    int vx;
-    int vy;
-
-    bool isMoving;
+  int width;
+  int height;
 };
 
-#endif  SRC_CIRCLE_H_
+#endif  //SRC_CIRCLE_H_

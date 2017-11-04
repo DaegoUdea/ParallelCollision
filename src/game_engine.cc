@@ -24,7 +24,7 @@ GameEngine::GameEngine() {
             SDL_WINDOW_SHOWN);
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    textFont = TTF_OpenFont("resources/fonts/Basica.ttf", 16);
+    textFont = TTF_OpenFont("resources/fonts/OpenSans-Regular.ttf", 16);
     white = { 255, 255, 255, 255 };
     black = {0, 0, 0, 255};
     fps = 0;
@@ -35,14 +35,14 @@ GameEngine::GameEngine() {
 void GameEngine::execute() {
   fpsTimer.start();
   while (!exit) {
-    capTimer.start();
 
     fps = countedFrames / (fpsTimer.getTicks() / 1000.f);
     if (fps > 2000) {
       fps = 0;
     }
     input();
-    update();
+    update(capTimer.getTicks());
+    capTimer.start();
     render();
     ++countedFrames;
   }
@@ -50,7 +50,7 @@ void GameEngine::execute() {
 }
 
 void GameEngine::clean_up() {
-    // Clean up the current state.
+    // Clean up the current states.
     while (!states.empty()) {
         states.back()->clean_up(this);
         states.pop_back();
@@ -100,9 +100,9 @@ void GameEngine::input() {
     states.back()->input(this);
 }
 
-void GameEngine::update() {
+void GameEngine::update(float deltaTime) {
     // Let the state update the game.
-    states.back()->update(this);
+    states.back()->update(this, deltaTime);
 }
 
 void GameEngine::render() {
