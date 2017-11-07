@@ -40,6 +40,7 @@ void GameEngine::execute() {
     if (fps > 2000) {
       fps = 0;
     }
+    deltaTime = capTimer.getTicks() / 1000.f;
     input();
     update(capTimer.getTicks());
     capTimer.start();

@@ -5,6 +5,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "circle.h"
+#include "rectangle.h"
+#include "collision_manager.h"
 
 
 class InitState : public GameState {
@@ -27,10 +29,22 @@ class InitState : public GameState {
 
  private:
     static InitState m_initstate;
+    CollisionManager* collision_manager;
     SDL_Texture* circle_texture;
-    Circle player;
-    Circle circle_obstacle1;
-    Circle circle_obstacle2;
+
+    Circle* player;
+    Circle* circle_obstacle1;
+    Circle* circle_obstacle2;
+    Circle* circle_obstacle3;
+    Circle* circle_obstacle4;
+
+    Rectangle* leftBorder;
+    Rectangle* rightBorder;
+    Rectangle* topBorder;
+    Rectangle* bottomBorder;
+
+    float velocity;
+    float v_step;
 
     bool exit;
 };

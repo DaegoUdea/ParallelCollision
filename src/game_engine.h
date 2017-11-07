@@ -52,6 +52,7 @@ class GameEngine {
 
     int countedFrames;
     float fps;
+    float deltaTime;
     std::stringstream fpsText;
 
 

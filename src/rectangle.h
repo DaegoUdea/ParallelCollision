@@ -1,18 +1,19 @@
-#ifndef SRC_CIRCLE_H_
-#define SRC_CIRCLE_H_
+#ifndef SRC_RECTANGLE_H_
+#define SRC_RECTANGLE_H_
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "gameobject.h"
 #include "vector2.h"
 
-class Circle : public GameObject {
+class Rectangle : public GameObject {
 public:
-  Circle(float x, float y, float r);
+  Rectangle(float x, float y, float width, float height);
 
   void init();
   void move(float deltaTime);
   void setDimension(float width, float height);
+  SDL_Rect* getSDLRectangle();
   void onCollision(GameObject* object);
 
   // Setters
@@ -31,7 +32,7 @@ public:
   SDL_Texture* getTexture();
 
 private:
-
+  SDL_Rect sdl_rectangle;
 };
 
-#endif  //SRC_CIRCLE_H_
+#endif  // SRC_RECTANGLE_H_

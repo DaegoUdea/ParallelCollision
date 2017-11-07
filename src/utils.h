@@ -20,6 +20,14 @@ void render_texture(
   int y,
   SDL_Rect *clip = nullptr);
 
+void draw_rectangle(
+  SDL_Renderer *ren,
+  SDL_Rect* rectangle,
+  Uint8 r,
+  Uint8 g,
+  Uint8 b,
+  Uint8 a);
+
 SDL_Texture* render_text(
   const std::string &message,
   SDL_Color color,

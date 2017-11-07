@@ -1,44 +1,71 @@
 #include "circle.h";
 #include "vector2.h"
+#include <iostream>
 
-Circle::Circle() {
-  init();
-}
-
-void Circle::init() {
+Circle::Circle(float x, float y, float r) {
   texture = NULL;
+  oldPosition = new Vector2();
   position = new Vector2();
   velocity = new Vector2();
 
-  position->setX(0);
-  position->setY(0);
+  oldPosition->setX(x);
+  oldPosition->setY(y);
+
+  position->setX(x);
+  position->setY(y);
 
   velocity->setX(0);
   velocity->setY(0);
 
-  width = 0;
-  height = 0;
+  width = r;
+  height = r;
+
+  init();
+}
+
+void Circle::init() {
+
 }
 
 void Circle::move(float deltaTime) {
+   oldPosition->setX(position->getX());
+   oldPosition->setY(position->getY());
+
    position->setX(position->getX() + (velocity->getX() * deltaTime));
    position->setY(position->getY() + (velocity->getY() * deltaTime));
 }
 
-void Circle::setDimension(int width, int height) {
+void Circle::setDimension(float width, float height) {
   this->width = width;
   this->height = height;
 }
 
+void Circle::onCollision(GameObject* object) {
+  position->setX(oldPosition->getX());
+  position->setY(oldPosition->getY());
+
+  velocity->setX(-(velocity->getX()));
+  velocity->setY(-(velocity->getY()));
+}
+
 // Setters
 void Circle::setPosition(Vector2* position) {
+  oldPosition->setX(this->position->getX());
+  oldPosition->setY(this->position->getY());
+
+    delete[] this->position;
     this->position = position;
 }
 
-void Circle::setWidth(int width) {
+void Circle::refreshPosition() {
+  oldPosition->setX(position->getX());
+  oldPosition->setY(position->getY());
+}
+
+void Circle::setWidth(float width) {
   this->width = width;
 }
-void Circle::setHeight(int height) {
+void Circle::setHeight(float height) {
   this->height = height;
 }
 
@@ -59,11 +86,11 @@ Vector2* Circle::getVelocity() {
   return velocity;
 }
 
-int Circle::getWidth(int width) {
+float Circle::getWidth() {
   return width;
 }
 
-int Circle::getHeight(int height) {
+float Circle::getHeight() {
   return height;
 }
 

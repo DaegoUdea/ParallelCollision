@@ -6,6 +6,8 @@ public:
   Vector2();
   Vector2(int x, int y);
 
+  static Vector2* lerp(Vector2* from, Vector2* to, float percent);
+
   // Setters
   void setX(float new_x);
   void setY(float new_y);
