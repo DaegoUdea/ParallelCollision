@@ -53,7 +53,7 @@ void Circle::setPosition(Vector2* position) {
   oldPosition->setX(this->position->getX());
   oldPosition->setY(this->position->getY());
 
-    delete[] this->position;
+    delete this->position;
     this->position = position;
 }
 

@@ -6,10 +6,10 @@ CC = g++
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-COMPILER_FLAGS = -w -std=c++0x 
+COMPILER_FLAGS = -w -std=c++0x
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 -lSDL2_ttf -lSDL2_image
+LINKER_FLAGS = -lSDL2 -lSDL2_ttf -lSDL2_image -fopenmp
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = Collision
