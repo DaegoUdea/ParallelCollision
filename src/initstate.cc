@@ -17,40 +17,40 @@ void InitState::init(GameEngine* game) {
 
   physics_manager = new PhysicsManager();
 
-  leftBorder = new Rectangle(0 - 175.f, 0, 200.f, 600.f);
-  rightBorder = new Rectangle(800.f - 25.f, 0, 200.f, 600.f);
+  leftBorder = new Rectangle(0 - 200.f, 0, 200.f, 600.f);
+  rightBorder = new Rectangle(1200.f, 0, 200.f, 600.f);
 
-  topBorder = new Rectangle(25.f, 0, 800.f-50.f, 25.f);
-  bottomBorder = new Rectangle(25.f, 600.f-25.f, 800.f-50.f, 25.f);
+  topBorder = new Rectangle(0, -975.f, 1200, 1000.f);
+  bottomBorder = new Rectangle(0, 600.f, 1200, 1000.f);
 
-  player = new Circle(50.f, 25.f, (float)width / 2);
+  player = new Circle(5.f, 300.f, (float)width / 2);
   player->setTexture(circle_texture);
 
   velocity = 300;
   v_step = 5;
 
-  for (int i = 0; i < 90; i++) {
-    newCircle = new Circle(50.f, 30.f + (i*5), (float)width / 2);
+  for (int i = 0; i < 180; i++) {
+    newCircle = new Circle(20.f + (i * 6 ), 30.f, (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(20 * i, 0));
+    newCircle->setVelocity(new Vector2(0, 500 + (i * 10 * 0)));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
 
-    newCircle = new Circle(750.f, 30.f + (i*5), (float)width / 2);
+    newCircle = new Circle(20.f + (i * 6 ), 550.f, (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(-20 * i, 0));
+    newCircle->setVelocity(new Vector2(0, -500 + (i * 10 * 0)));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
 
-    newCircle = new Circle(350.f, 30.f + (i*5), (float)width / 2);
+    newCircle = new Circle(20.f + (i * 6 ), 200.f, (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(20 * i, 0));
+    newCircle->setVelocity(new Vector2(0, -500 + (i * 10 * 0)));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
 
-    newCircle = new Circle(450.f, 30.f + (i*5), (float)width / 2);
+    newCircle = new Circle(20.f + (i * 6 ), 400.f, (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(-20 * i, 0));
+    newCircle->setVelocity(new Vector2(0, 500 + (i * 10 * 0)));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
   }
@@ -152,11 +152,9 @@ void InitState::update(GameEngine* game, float deltaTime) {
   else {
     vel->setY(0.f);
   }
-  #pragma omp parallel num_threads(1)
-  {
-    physics_manager->handle_movement(game->deltaTime);
-    physics_manager->handle_collissions(game->deltaTime);
-  }
+
+  physics_manager->handle_movement(game->deltaTime);
+  physics_manager->handle_collissions(game->deltaTime);
 }
 
 void InitState::render(GameEngine* game) {
@@ -164,11 +162,11 @@ void InitState::render(GameEngine* game) {
   SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, 1);
   SDL_RenderClear(game->renderer);
   std::stringstream fps;
-  fps << "FPS: " << game->fps << "  \nVelocity: " << velocity;
+  fps << "FPS: " << game->fps;
 
   draw_rectangle(game->renderer, leftBorder->getSDLRectangle(), 0xFF, 0x00, 0x00, 0xFF);
   draw_rectangle(game->renderer, rightBorder->getSDLRectangle(), 0x00, 0xFF, 0x00, 0xFF);
-  draw_rectangle(game->renderer, topBorder->getSDLRectangle(), 0x00, 0x00, 0xFF, 0xFF);
+  draw_rectangle(game->renderer, topBorder->getSDLRectangle(), 0x00, 0x00, 0x00, 0xFF);
   draw_rectangle(game->renderer, bottomBorder->getSDLRectangle(), 0xFF, 0xFF, 0x00, 0xFF);
 
   int size = circleObstacles.size();

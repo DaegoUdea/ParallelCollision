@@ -2,7 +2,7 @@
 #include "gamestate.h"
 #include "utils.h"
 
-const int SCREEN_WIDTH = 800;
+const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 600;
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
@@ -34,7 +34,7 @@ GameEngine::GameEngine() {
 
 void GameEngine::execute() {
   fpsTimer.start();
-  
+
   while (!exit) {
 
     fps = countedFrames / (fpsTimer.getTicks() / 1000.f);
