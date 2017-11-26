@@ -8,7 +8,7 @@ RectCollision::~RectCollision() {
 
 }
 
-bool RectCollision::check_collision(GameObject* object1, GameObject* object2) {
+bool RectCollision::check_collision(GameObject* object1, GameObject* object2, float* t) {
   float left1, right1, top1, bottom1;
   float left2, right2, top2, bottom2;
 

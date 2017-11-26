@@ -9,11 +9,13 @@ class PhysicsManager {
 public:
   PhysicsManager();
   void handle_movement(float deltaTime);
-  void handle_collissions();
-  void addGameObject(GameObject* gameObject);
+  void handle_collissions(float deltaTime);
+  void addStaticGameObject(GameObject* gameObject);
+  void addDynamicGameObject(GameObject* gameObject);
 
 private:
-  std::vector<GameObject*> gameObjectList;
+  std::vector<GameObject*> staticObjects;
+  std::vector<GameObject*> dynamicObjects;
 };
 
 #endif  // SRC_PHYSICS_MANAGER_H_

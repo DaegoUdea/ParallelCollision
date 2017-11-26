@@ -7,6 +7,9 @@ public:
   Vector2(int x, int y);
 
   static Vector2* lerp(Vector2* from, Vector2* to, float percent);
+  static void add(Vector2* vector1, Vector2* vector2, Vector2* out);
+  static void substract(Vector2* vector1, Vector2* vector2, Vector2* out);
+  static void dot(Vector2* vector1, Vector2* vector2, float* scalar);
 
   // Setters
   void setX(float new_x);

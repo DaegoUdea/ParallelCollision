@@ -33,10 +33,9 @@ class InitState : public GameState {
     SDL_Texture* circle_texture;
 
     Circle* player;
-    Circle* circle_obstacle1;
-    Circle* circle_obstacle2;
-    Circle* circle_obstacle3;
-    Circle* circle_obstacle4;
+    Circle* newCircle;
+    std::vector<GameObject*> circleObstacles;
+
 
     Rectangle* leftBorder;
     Rectangle* rightBorder;

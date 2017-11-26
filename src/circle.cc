@@ -17,8 +17,9 @@ Circle::Circle(float x, float y, float r) {
   velocity->setX(0);
   velocity->setY(0);
 
-  width = r;
-  height = r;
+  width = r * 2;
+  height = r * 2;
+  radius = r;
 
   init();
 }
@@ -69,6 +70,10 @@ void Circle::setHeight(float height) {
   this->height = height;
 }
 
+void Circle::setRadius(float radius) {
+  this->radius = radius;
+}
+
 void Circle::setVelocity(Vector2* velocity) {
   this->velocity = velocity;
 }
@@ -92,6 +97,10 @@ float Circle::getWidth() {
 
 float Circle::getHeight() {
   return height;
+}
+
+float Circle::getRadius() {
+  return radius;
 }
 
 SDL_Texture* Circle::getTexture() {

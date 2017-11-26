@@ -23,35 +23,25 @@ void InitState::init(GameEngine* game) {
   topBorder = new Rectangle(25.f, 0, 800.f-50.f, 25.f);
   bottomBorder = new Rectangle(25.f, 600.f-25.f, 800.f-50.f, 25.f);
 
-  player = new Circle(50.f, 50.f, (float)width);
-  circle_obstacle1 = new Circle(50.f, 100.f, (float)width);
-  circle_obstacle2 = new Circle(50.f, 200.f, (float)width);
-  circle_obstacle3 = new Circle(50.f, 300.f, (float)width);
-  circle_obstacle4 = new Circle(50.f, 400.f, (float)width);
-
+  player = new Circle(50.f, 50.f, (float)width / 2);
   player->setTexture(circle_texture);
-  circle_obstacle1->setTexture(circle_texture);
-  circle_obstacle2->setTexture(circle_texture);
-  circle_obstacle3->setTexture(circle_texture);
-  circle_obstacle4->setTexture(circle_texture);
-
-  circle_obstacle1->setVelocity(new Vector2(500, 0));
-  circle_obstacle2->setVelocity(new Vector2(1500, 0));
-  circle_obstacle3->setVelocity(new Vector2(2500, 0));
-  circle_obstacle4->setVelocity(new Vector2(3500, 0));
 
   velocity = 300;
   v_step = 5;
 
-  physics_manager->addGameObject(player);
-  physics_manager->addGameObject(circle_obstacle1);
-  physics_manager->addGameObject(circle_obstacle2);
-  physics_manager->addGameObject(circle_obstacle3);
-  physics_manager->addGameObject(circle_obstacle4);
-  physics_manager->addGameObject(leftBorder);
-  physics_manager->addGameObject(rightBorder);
-  physics_manager->addGameObject(topBorder);
-  physics_manager->addGameObject(bottomBorder);
+  for (int i = 0; i < 15; i++) {
+    newCircle = new Circle(50.f, 100.f + (i*25), (float)width / 2);
+    newCircle->setTexture(circle_texture);
+    newCircle->setVelocity(new Vector2(250 * i, 0));
+    circleObstacles.push_back(newCircle);
+    physics_manager->addDynamicGameObject(newCircle);
+  }
+
+  physics_manager->addDynamicGameObject(player);
+  physics_manager->addStaticGameObject(leftBorder);
+  physics_manager->addStaticGameObject(rightBorder);
+  physics_manager->addStaticGameObject(topBorder);
+  physics_manager->addStaticGameObject(bottomBorder);
 }
 
 void InitState::clean_up(GameEngine* game) {
@@ -123,22 +113,30 @@ void InitState::update(GameEngine* game, float deltaTime) {
 
   Keyboard* keyboard = Keyboard::getInstance();
 
-  float x = player->getPosition()->getX();
-  float y = player->getPosition()->getY();
+  Vector2* vel = player->getVelocity();
 
-  if (keyboard->getPressedKey("A")) {x += -velocity;}
-  if (keyboard->getPressedKey("D")) {x += velocity;}
-  if (keyboard->getPressedKey("W")) {y += -velocity;}
-  if (keyboard->getPressedKey("S")) {y += velocity;}
+  if (keyboard->getPressedKey("A")) {
+    vel->setX(-velocity);
+  }
+  else if (keyboard->getPressedKey("D")) {
+    vel->setX(velocity);
+  }
+  else {
+    vel->setX(0.f);
+  }
 
-  player->setPosition(Vector2::lerp(player->getPosition(), new Vector2(x, y), game->deltaTime));
-  // circle_obstacle1->move(game->deltaTime);
-  // circle_obstacle2->move(game->deltaTime);
-  // circle_obstacle3->move(game->deltaTime);
-  // circle_obstacle4->move(game->deltaTime);
+  if (keyboard->getPressedKey("W")) {
+    vel->setY(-velocity);
+  }
+  else if (keyboard->getPressedKey("S")) {
+    vel->setY(velocity);
+  }
+  else {
+    vel->setY(0.f);
+  }
 
-    physics_manager->handle_movement(game->deltaTime);
-    physics_manager->handle_collissions();
+  physics_manager->handle_movement(game->deltaTime);
+  // physics_manager->handle_collissions();
 }
 
 void InitState::render(GameEngine* game) {
@@ -153,45 +151,30 @@ void InitState::render(GameEngine* game) {
   draw_rectangle(game->renderer, topBorder->getSDLRectangle(), 0x00, 0x00, 0xFF, 0xFF);
   draw_rectangle(game->renderer, bottomBorder->getSDLRectangle(), 0xFF, 0xFF, 0x00, 0xFF);
 
-  render_texture(
-    player->getTexture(),
-    game->renderer,
-    (int)player->getPosition()->getX(),
-    (int)player->getPosition()->getY(),
-    nullptr);
+  int size = circleObstacles.size();
+  Circle* circle;
+
+  for (int i = 0; i < size; i++) {
+    circle = (Circle*) circleObstacles.at(i);
+    render_texture(
+      circle->getTexture(),
+      game->renderer,
+      (int)circle->getPosition()->getX(),
+      (int)circle->getPosition()->getY(),
+      nullptr);
+    }
 
     render_texture(
-      circle_obstacle1->getTexture(),
+      player->getTexture(),
       game->renderer,
-      (int)circle_obstacle1->getPosition()->getX(),
-      (int)circle_obstacle1->getPosition()->getY(),
+      (int)player->getPosition()->getX(),
+      (int)player->getPosition()->getY(),
       nullptr);
 
-      render_texture(
-        circle_obstacle2->getTexture(),
-        game->renderer,
-        (int)circle_obstacle2->getPosition()->getX(),
-        (int)circle_obstacle2->getPosition()->getY(),
-        nullptr);
+      game->fpsTexture = render_text(fps.str(), game->white, game->textFont, game->renderer);
+      render_texture(game->fpsTexture, game->renderer, 0, 0);
 
-        render_texture(
-          circle_obstacle3->getTexture(),
-          game->renderer,
-          (int)circle_obstacle3->getPosition()->getX(),
-          (int)circle_obstacle3->getPosition()->getY(),
-          nullptr);
-
-          render_texture(
-            circle_obstacle4->getTexture(),
-            game->renderer,
-            (int)circle_obstacle4->getPosition()->getX(),
-            (int)circle_obstacle4->getPosition()->getY(),
-            nullptr);
-
-            game->fpsTexture = render_text(fps.str(), game->white, game->textFont, game->renderer);
-            render_texture(game->fpsTexture, game->renderer, 0, 0);
-
-            // Swap buffers.
-            SDL_RenderPresent(game->renderer);
-            SDL_DestroyTexture(game->fpsTexture);
-          }
+      // Swap buffers.
+      SDL_RenderPresent(game->renderer);
+      SDL_DestroyTexture(game->fpsTexture);
+    }

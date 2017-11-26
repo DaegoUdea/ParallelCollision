@@ -40,6 +40,12 @@ void GameEngine::execute() {
     if (fps > 2000) {
       fps = 0;
     }
+    
+    if (fpsTimer.getTicks() / 1000.f > 60.f) {
+      fpsTimer.start();
+      countedFrames = 0;
+    }
+
     deltaTime = capTimer.getTicks() / 1000.f;
     input();
     update(capTimer.getTicks());

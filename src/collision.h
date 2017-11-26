@@ -8,7 +8,7 @@ class Collision {
 public:
   Collision() {};
   ~Collision() {};
-  virtual bool check_collision(GameObject* object1, GameObject* object2) = 0;
+  virtual bool check_collision(GameObject* object1, GameObject* object2, float* t) = 0;
 
 protected:
 

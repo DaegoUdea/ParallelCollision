@@ -9,7 +9,7 @@ class RectCollision : public Collision {
 public:
   RectCollision();
   ~RectCollision();
-  bool check_collision(GameObject* object1, GameObject* object2);
+  bool check_collision(GameObject* object1, GameObject* object2, float* t);
 protected:
 
 };

@@ -21,6 +21,20 @@ Vector2* Vector2::lerp(Vector2* from, Vector2* to, float percent) {
   return new Vector2(x, y);
 }
 
+void Vector2::add(Vector2* vector1, Vector2* vector2, Vector2* out) {
+    out->setX(vector1->getX() + vector2->getX());
+    out->setY(vector1->getY() + vector2->getY());
+}
+
+void Vector2::substract(Vector2* vector1, Vector2* vector2, Vector2* out) {
+  out->setX(vector1->getX() - vector2->getX());
+  out->setY(vector1->getY() - vector2->getY());
+}
+
+void Vector2::dot(Vector2* vector1, Vector2* vector2, float* scalar) {
+  (*scalar) = (vector1->getX() * vector2->getX()) + (vector1->getY() * vector2->getY());
+}
+
 // Setters
 void Vector2::setX(float new_x) {
   x = new_x;
