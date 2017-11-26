@@ -29,7 +29,7 @@ void InitState::init(GameEngine* game) {
   velocity = 300;
   v_step = 5;
 
-  for (int i = 0; i < 15; i++) {
+  for (int i = 0; i < 17; i++) {
     newCircle = new Circle(50.f, 100.f + (i*25), (float)width / 2);
     newCircle->setTexture(circle_texture);
     newCircle->setVelocity(new Vector2(250 * i, 0));
@@ -134,9 +134,11 @@ void InitState::update(GameEngine* game, float deltaTime) {
   else {
     vel->setY(0.f);
   }
-
-  physics_manager->handle_movement(game->deltaTime);
-  // physics_manager->handle_collissions();
+  #pragma omp parallel
+  {
+    physics_manager->handle_movement(game->deltaTime);
+    physics_manager->handle_collissions(game->deltaTime);
+  }
 }
 
 void InitState::render(GameEngine* game) {

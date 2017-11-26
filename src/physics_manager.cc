@@ -3,64 +3,72 @@
 #include "rect_collision.h"
 #include "circle_collision.h"
 #include <iostream>
+#include <omp.h>
 
 PhysicsManager::PhysicsManager() {
-
+  rectCollision = new RectCollision();
+  circleCollision = new CircleCollision();
 }
 
 void PhysicsManager::handle_movement(float deltaTime) {
   int size = dynamicObjects.size();
+  int i = 0;
   GameObject* object;
 
-  // #pragma omp parallel for private(object)
-  for (int i = 0; i < size; i++) {
-    object = (GameObject*)dynamicObjects.at(i);
+  int local_i, local_j, local_n;
+  int my_rank = omp_get_thread_num();
+  int thread_count = omp_get_num_threads();
+
+  local_n = size / thread_count;
+
+  // #pragma omp parallel for private(object, i)
+  for (i = 0; i < local_n; i++) {
+    object = (GameObject*)dynamicObjects.at((local_n * my_rank) + i);
     object->move(deltaTime);
-    handle_collissions(deltaTime);
+    // handle_collissions(deltaTime);
   }
 }
 
 void PhysicsManager::handle_collissions(float deltaTime) {
   int sizeStatic = staticObjects.size();
   int sizeDynamic = dynamicObjects.size();
+  float t = 0;
+  int i, j = 0;
 
-  Collision* collision;
   GameObject* object1;
   GameObject* object2;
-  float t = 0;
 
-  // #pragma omp parallel for private(collision, object1, object2)
-  for (int i = 0; i < sizeDynamic; i++) {
-    for (int j = 0; j < sizeStatic; j++) {
-      object1 = (GameObject*)dynamicObjects.at(i);
+  int local_i, local_j, local_n, local_m;
+  int my_rank = omp_get_thread_num();
+  int thread_count = omp_get_num_threads();
+
+  local_n = sizeDynamic / thread_count;
+
+  for (i = 0; i < local_n; i++) {
+    object1 = (GameObject*)dynamicObjects.at((local_n * my_rank) + i);
+    for (j = 0; j < sizeStatic; j++) {
       object2 = (GameObject*)staticObjects.at(j);
 
       if (object1 != object2) {
-        collision = new RectCollision();
-        if (collision->check_collision(object1, object2, &t)) {
+        if (rectCollision->check_collision(object1, object2, &t)) {
           object1->onCollision(object2);
           object2->onCollision(object1);
         }
-        delete collision;
       }
     }
   }
 
-  collision = new CircleCollision();
-  #pragma omp parallel for private(object1, object2)
-  for (int i = 0; i < sizeDynamic; i++) {
-    for (int j = 0; j < sizeDynamic; j++) {
-      object1 = (GameObject*)dynamicObjects.at(i);
+  for (i = 0; i < local_n; i++) {
+    object1 = (GameObject*)dynamicObjects.at((local_n * my_rank) + i);
+    for (j = 0; j < sizeDynamic; j++) {
       object2 = (GameObject*)dynamicObjects.at(j);
 
       if (object1 != object2) {
-        // collision = new CircleCollision();
-        if (collision->check_collision(object1, object2, &t)) {
+        if (circleCollision->check_collision(object1, object2, &t)) {
           Vector2* pos;
           Vector2* vel;
 
           if (t <= deltaTime) {
-            /* code */
             pos = object1->getPosition();
             vel = object1->getVelocity();
             pos->setX(pos->getX() + (vel->getX() * (t - (1 * deltaTime))));
@@ -79,7 +87,6 @@ void PhysicsManager::handle_collissions(float deltaTime) {
           // object1->onCollision(object2);
           // object2->onCollision(object1);
         }
-        // delete collision;
       }
     }
   }

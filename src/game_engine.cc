@@ -34,13 +34,14 @@ GameEngine::GameEngine() {
 
 void GameEngine::execute() {
   fpsTimer.start();
+  
   while (!exit) {
 
     fps = countedFrames / (fpsTimer.getTicks() / 1000.f);
     if (fps > 2000) {
       fps = 0;
     }
-    
+
     if (fpsTimer.getTicks() / 1000.f > 60.f) {
       fpsTimer.start();
       countedFrames = 0;
