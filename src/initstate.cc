@@ -23,16 +23,34 @@ void InitState::init(GameEngine* game) {
   topBorder = new Rectangle(25.f, 0, 800.f-50.f, 25.f);
   bottomBorder = new Rectangle(25.f, 600.f-25.f, 800.f-50.f, 25.f);
 
-  player = new Circle(50.f, 50.f, (float)width / 2);
+  player = new Circle(50.f, 25.f, (float)width / 2);
   player->setTexture(circle_texture);
 
   velocity = 300;
   v_step = 5;
 
-  for (int i = 0; i < 17; i++) {
-    newCircle = new Circle(50.f, 100.f + (i*25), (float)width / 2);
+  for (int i = 0; i < 90; i++) {
+    newCircle = new Circle(50.f, 30.f + (i*5), (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(250 * i, 0));
+    newCircle->setVelocity(new Vector2(20 * i, 0));
+    circleObstacles.push_back(newCircle);
+    physics_manager->addDynamicGameObject(newCircle);
+
+    newCircle = new Circle(750.f, 30.f + (i*5), (float)width / 2);
+    newCircle->setTexture(circle_texture);
+    newCircle->setVelocity(new Vector2(-20 * i, 0));
+    circleObstacles.push_back(newCircle);
+    physics_manager->addDynamicGameObject(newCircle);
+
+    newCircle = new Circle(350.f, 30.f + (i*5), (float)width / 2);
+    newCircle->setTexture(circle_texture);
+    newCircle->setVelocity(new Vector2(20 * i, 0));
+    circleObstacles.push_back(newCircle);
+    physics_manager->addDynamicGameObject(newCircle);
+
+    newCircle = new Circle(450.f, 30.f + (i*5), (float)width / 2);
+    newCircle->setTexture(circle_texture);
+    newCircle->setVelocity(new Vector2(-20 * i, 0));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
   }
@@ -134,7 +152,7 @@ void InitState::update(GameEngine* game, float deltaTime) {
   else {
     vel->setY(0.f);
   }
-  #pragma omp parallel
+  #pragma omp parallel num_threads(1)
   {
     physics_manager->handle_movement(game->deltaTime);
     physics_manager->handle_collissions(game->deltaTime);
@@ -155,12 +173,16 @@ void InitState::render(GameEngine* game) {
 
   int size = circleObstacles.size();
   Circle* circle;
+  int i = 0;
+  SDL_Renderer* renderer= game->renderer;
 
-  for (int i = 0; i < size; i++) {
+  // #pragma omp parallel for private(circle, i)
+  for (i = 0; i < size; i++) {
     circle = (Circle*) circleObstacles.at(i);
+    // #pragma omp critical
     render_texture(
       circle->getTexture(),
-      game->renderer,
+      renderer,
       (int)circle->getPosition()->getX(),
       (int)circle->getPosition()->getY(),
       nullptr);
