@@ -59,7 +59,7 @@ void PhysicsManager::handle_collissions() {
   }
 
   if (properties->is_collision_on) {
-
+    #pragma omp parallel for private(i, j, object1, object2)
     for (i = 0; i < sizeDynamic; i++) {
       object1 = (GameObject*)dynamicObjects.at(i);
       for (j = 0; j < sizeDynamic; j++) {
