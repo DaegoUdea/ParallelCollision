@@ -71,16 +71,16 @@ void PhysicsManager::handle_collissions() {
             Vector2* pos;
             Vector2* vel;
 
-            if (t <= properties->deltaTime) {
+            if (t <= 1.f) {
 
               oldPos = object1->getOldPosition();
               pos = object1->getPosition();
               vel = object1->getVelocity();
-              // pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
-              // pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+              pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
+              pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
 
-              pos->setX(oldPos->getX());
-              pos->setY(oldPos->getY());
+              // pos->setX(oldPos->getX());
+              // pos->setY(oldPos->getY());
 
               vel->setX(-(vel->getX()));
               vel->setY(-(vel->getY()));
@@ -88,11 +88,11 @@ void PhysicsManager::handle_collissions() {
               oldPos = object2->getOldPosition();
               pos = object2->getPosition();
               vel = object2->getVelocity();
-              // pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
-              // pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+              pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
+              pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
 
-              pos->setX(oldPos->getX());
-              pos->setY(oldPos->getY());
+              // pos->setX(oldPos->getX());
+              // pos->setY(oldPos->getY());
 
               vel->setX(-(vel->getX()));
               vel->setY(-(vel->getY()));
