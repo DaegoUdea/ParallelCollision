@@ -53,8 +53,6 @@ class GameEngine {
     int countedFrames;
     float fps;
     float deltaTime;
-    std::stringstream fpsText;
-
 
  private:
     std::vector<GameState*> states;

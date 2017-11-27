@@ -4,13 +4,14 @@
 #include "circle_collision.h"
 #include <iostream>
 #include <omp.h>
+#include "game_properties.h"
 
 PhysicsManager::PhysicsManager() {
   rectCollision = new RectCollision();
   circleCollision = new CircleCollision();
 }
 
-void PhysicsManager::handle_movement(float deltaTime) {
+void PhysicsManager::handle_movement() {
   int size = dynamicObjects.size();
   int i = 0;
   GameObject* object;
@@ -21,14 +22,14 @@ void PhysicsManager::handle_movement(float deltaTime) {
 
   local_n = size / thread_count;
 
-  // #pragma omp parallel for private(object, i)
   for (i = 0; i < size; i++) {
     object = (GameObject*)dynamicObjects.at(i);
-    object->move(deltaTime);
+    object->move();
   }
 }
 
-void PhysicsManager::handle_collissions(float deltaTime) {
+void PhysicsManager::handle_collissions() {
+  GameProperties* properties = GameProperties::getInstance();
   int sizeStatic = staticObjects.size();
   int sizeDynamic = dynamicObjects.size();
   float t = 0;
@@ -43,7 +44,6 @@ void PhysicsManager::handle_collissions(float deltaTime) {
 
   local_n = sizeDynamic / thread_count;
 
-  #pragma omp parallel for private(i,j,object1,object2)
   for (i = 0; i < sizeStatic; i++) {
     object1 = (GameObject*)staticObjects.at(i);
     for (j = 0; j < sizeDynamic; j++) {
@@ -58,37 +58,50 @@ void PhysicsManager::handle_collissions(float deltaTime) {
     }
   }
 
-  // #pragma omp parallel for private(i,j,object1,object2)
-  // for (i = 0; i < sizeDynamic; i++) {
-  //   object1 = (GameObject*)dynamicObjects.at(i);
-  //   for (j = 0; j < sizeDynamic; j++) {
-  //     object2 = (GameObject*)dynamicObjects.at(j);
-  //
-  //     if (object1 != object2) {
-  //       if (circleCollision->check_collision(object1, object2, &t)) {
-  //         Vector2* pos;
-  //         Vector2* vel;
-  //
-  //         if (t <= deltaTime) {
-  //           pos = object1->getPosition();
-  //           vel = object1->getVelocity();
-  //           pos->setX(pos->getX() + (vel->getX() * (t - (1 * deltaTime))));
-  //           pos->setY(pos->getY() + (vel->getY() *(t - (1 * deltaTime))));
-  //           vel->setX(-(vel->getX()));
-  //           vel->setY(-(vel->getY()));
-  //
-  //           pos = object2->getPosition();
-  //           vel = object2->getVelocity();
-  //           pos->setX(pos->getX() + (vel->getX()* deltaTime *(t - (1 * deltaTime))));
-  //           pos->setY(pos->getY() + (vel->getY()* deltaTime *(t - (1 * deltaTime))));
-  //           vel->setX(-(vel->getX()));
-  //           vel->setY(-(vel->getY()));
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  if (properties->is_collision_on) {
 
+    for (i = 0; i < sizeDynamic; i++) {
+      object1 = (GameObject*)dynamicObjects.at(i);
+      for (j = 0; j < sizeDynamic; j++) {
+        object2 = (GameObject*)dynamicObjects.at(j);
+
+        if (object1 != object2) {
+          if (circleCollision->check_collision(object1, object2, &t)) {
+            Vector2* oldPos;
+            Vector2* pos;
+            Vector2* vel;
+
+            if (t <= properties->deltaTime) {
+
+              oldPos = object1->getOldPosition();
+              pos = object1->getPosition();
+              vel = object1->getVelocity();
+              // pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
+              // pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+
+              pos->setX(oldPos->getX());
+              pos->setY(oldPos->getY());
+
+              vel->setX(-(vel->getX()));
+              vel->setY(-(vel->getY()));
+
+              oldPos = object2->getOldPosition();
+              pos = object2->getPosition();
+              vel = object2->getVelocity();
+              // pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
+              // pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+
+              pos->setX(oldPos->getX());
+              pos->setY(oldPos->getY());
+
+              vel->setX(-(vel->getX()));
+              vel->setY(-(vel->getY()));
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 void PhysicsManager::addStaticGameObject(GameObject* gameObject) {

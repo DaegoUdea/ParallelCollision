@@ -10,8 +10,8 @@
 class PhysicsManager {
 public:
   PhysicsManager();
-  void handle_movement(float deltaTime);
-  void handle_collissions(float deltaTime);
+  void handle_movement();
+  void handle_collissions();
   void addStaticGameObject(GameObject* gameObject);
   void addDynamicGameObject(GameObject* gameObject);
 

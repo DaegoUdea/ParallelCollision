@@ -1,6 +1,7 @@
 #include "rectangle.h";
 #include "vector2.h"
 #include <iostream>
+#include "game_properties.h"
 
 Rectangle::Rectangle(float x, float y, float w, float h) {
   texture = NULL;
@@ -29,12 +30,13 @@ void Rectangle::init() {
 
 }
 
-void Rectangle::move(float deltaTime) {
+void Rectangle::move() {
+  GameProperties* properties = GameProperties::getInstance();
   oldPosition->setX(position->getX());
   oldPosition->setY(position->getY());
 
-  position->setX(position->getX() + (velocity->getX() * deltaTime));
-  position->setY(position->getY() + (velocity->getY() * deltaTime));
+  position->setX(position->getX() + (velocity->getX() * properties->deltaTime));
+  position->setY(position->getY() + (velocity->getY() * properties->deltaTime));
 }
 
 void Rectangle::setDimension(float width, float height) {
@@ -61,6 +63,11 @@ void Rectangle::setPosition(Vector2* position) {
   this->position = position;
 }
 
+void Rectangle::setOldPosition(Vector2* oldPosition) {
+  delete[] this->oldPosition;
+  this->oldPosition = oldPosition;
+}
+
 void Rectangle::refreshPosition() {
   oldPosition->setX(position->getX());
   oldPosition->setY(position->getY());
@@ -84,6 +91,10 @@ void Rectangle::setTexture(SDL_Texture* texture) {
 // Getters
 Vector2* Rectangle::getPosition() {
   return position;
+}
+
+Vector2* Rectangle::getOldPosition() {
+  return oldPosition;
 }
 
 Vector2* Rectangle::getVelocity() {

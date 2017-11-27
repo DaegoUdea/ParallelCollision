@@ -1,6 +1,7 @@
 #include "game_engine.h"
 #include "gamestate.h"
 #include "utils.h"
+#include "game_properties.h"
 
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 600;
@@ -34,6 +35,7 @@ GameEngine::GameEngine() {
 
 void GameEngine::execute() {
   fpsTimer.start();
+  GameProperties* properties = GameProperties::getInstance();
 
   while (!exit) {
 
@@ -42,12 +44,15 @@ void GameEngine::execute() {
       fps = 0;
     }
 
-    if (fpsTimer.getTicks() / 1000.f > 60.f) {
+    if (fpsTimer.getTicks() / 1000.f > 1.0f) {
       fpsTimer.start();
       countedFrames = 0;
     }
 
+    properties->fps = fps;
     deltaTime = capTimer.getTicks() / 1000.f;
+    properties->deltaTime = deltaTime;
+
     input();
     update(capTimer.getTicks());
     capTimer.start();

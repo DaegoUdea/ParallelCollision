@@ -11,13 +11,14 @@ public:
   Rectangle(float x, float y, float width, float height);
 
   void init();
-  void move(float deltaTime);
+  void move();
   void setDimension(float width, float height);
   SDL_Rect* getSDLRectangle();
   void onCollision(GameObject* object);
 
   // Setters
   void setPosition(Vector2* position);
+  void setOldPosition(Vector2* oldPosition);
   void refreshPosition();
   void setWidth(float width);
   void setHeight(float height);
@@ -26,6 +27,7 @@ public:
 
   // Getters
   Vector2* getPosition();
+  Vector2* getOldPosition();
   Vector2* getVelocity();
   float getWidth();
   float getHeight();

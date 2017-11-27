@@ -1,6 +1,7 @@
 #include "circle.h";
 #include "vector2.h"
 #include <iostream>
+#include "game_properties.h"
 
 Circle::Circle(float x, float y, float r) {
   texture = NULL;
@@ -28,12 +29,13 @@ void Circle::init() {
 
 }
 
-void Circle::move(float deltaTime) {
+void Circle::move() {
+  GameProperties* properties = GameProperties::getInstance();
    oldPosition->setX(position->getX());
    oldPosition->setY(position->getY());
 
-   position->setX(position->getX() + (velocity->getX() * deltaTime));
-   position->setY(position->getY() + (velocity->getY() * deltaTime));
+   position->setX(position->getX() + (velocity->getX() * properties->deltaTime));
+   position->setY(position->getY() + (velocity->getY() * properties->deltaTime));
 }
 
 void Circle::setDimension(float width, float height) {
@@ -56,6 +58,11 @@ void Circle::setPosition(Vector2* position) {
 
     delete this->position;
     this->position = position;
+}
+
+void Circle::setOldPosition(Vector2* oldPosition) {
+    delete this->oldPosition;
+    this->oldPosition = oldPosition;
 }
 
 void Circle::refreshPosition() {
@@ -85,6 +92,10 @@ void Circle::setTexture(SDL_Texture* texture) {
 // Getters
 Vector2* Circle::getPosition() {
   return position;
+}
+
+Vector2* Circle::getOldPosition() {
+  return oldPosition;
 }
 
 Vector2* Circle::getVelocity() {
