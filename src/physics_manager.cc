@@ -38,11 +38,7 @@ void PhysicsManager::handle_collissions() {
   GameObject* object1;
   GameObject* object2;
 
-  int local_i, local_j, local_n, local_m;
-  int my_rank = omp_get_thread_num();
-  int thread_count = omp_get_num_threads();
 
-  local_n = sizeDynamic / thread_count;
 
   for (i = 0; i < sizeStatic; i++) {
     object1 = (GameObject*)staticObjects.at(i);
@@ -58,44 +54,37 @@ void PhysicsManager::handle_collissions() {
     }
   }
 
-  if (properties->is_collision_on) {
+  int num_threads = properties->num_threads;
+  #pragma omp parallel num_threads(num_threads) private(object1, object2, i, j)
+  {
+    int local_n;
+    int my_rank = omp_get_thread_num();
+    int thread_count = omp_get_num_threads();
 
-    for (i = 0; i < sizeDynamic; i++) {
-      object1 = (GameObject*)dynamicObjects.at(i);
-      for (j = 0; j < sizeDynamic; j++) {
-        object2 = (GameObject*)dynamicObjects.at(j);
+    local_n = sizeDynamic / thread_count;
 
-        if (object1 != object2) {
-          if (circleCollision->check_collision(object1, object2, &t)) {
-            Vector2* oldPos;
-            Vector2* pos;
-            Vector2* vel;
+    if (properties->is_collision_on) {
+      for (i = 0; i < local_n; i++) {
+        object1 = (GameObject*)dynamicObjects.at((local_n * my_rank) + i);
+        for (j = 0; j < sizeDynamic; j++) {
+          object2 = (GameObject*)dynamicObjects.at(j);
 
-            if (t <= 1.f) {
+          if (object1 != object2) {
+            if (circleCollision->check_collision(object1, object2, &t)) {
+              Vector2* oldPos;
+              Vector2* pos;
+              Vector2* vel;
 
-              oldPos = object1->getOldPosition();
-              pos = object1->getPosition();
-              vel = object1->getVelocity();
-              pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
-              pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+              if (t <= 1.f) {
 
-              // pos->setX(oldPos->getX());
-              // pos->setY(oldPos->getY());
-
-              vel->setX(-(vel->getX()));
-              vel->setY(-(vel->getY()));
-
-              oldPos = object2->getOldPosition();
-              pos = object2->getPosition();
-              vel = object2->getVelocity();
-              pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
-              pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
-
-              // pos->setX(oldPos->getX());
-              // pos->setY(oldPos->getY());
-
-              vel->setX(-(vel->getX()));
-              vel->setY(-(vel->getY()));
+                oldPos = object1->getOldPosition();
+                pos = object1->getPosition();
+                vel = object1->getVelocity();
+                pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
+                pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
+                vel->setX(-(vel->getX()));
+                vel->setY(-(vel->getY()));
+              }
             }
           }
         }

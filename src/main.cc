@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   if (argc != 2){
     properties->num_threads = 1;
   } else {
-    properties->num_threads = atof(argv[1]);
+    properties->num_threads = atoi(argv[1]);
   }
 
   properties->is_collision_on = false;

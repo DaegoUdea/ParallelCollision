@@ -10,7 +10,7 @@ public:
 
   float fps;
   float deltaTime;
-  float num_threads;
+  int num_threads;
   float is_collision_on;
 
 protected:
