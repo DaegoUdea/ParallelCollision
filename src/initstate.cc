@@ -45,7 +45,7 @@ void InitState::init(GameEngine* game) {
 
     newCircle = new Circle(120.f + (i * 6 ), 200.f, (float)width / 2);
     newCircle->setTexture(circle_texture);
-    newCircle->setVelocity(new Vector2(0, -500 + (i * 10 * 0)));
+    newCircle->setVelocity(new Vector2(0, -500 + (i * 10 )));
     circleObstacles.push_back(newCircle);
     physics_manager->addDynamicGameObject(newCircle);
   }
