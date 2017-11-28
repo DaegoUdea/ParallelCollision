@@ -16,12 +16,6 @@ void PhysicsManager::handle_movement() {
   int i = 0;
   GameObject* object;
 
-  int local_i, local_j, local_n;
-  int my_rank = omp_get_thread_num();
-  int thread_count = omp_get_num_threads();
-
-  local_n = size / thread_count;
-
   for (i = 0; i < size; i++) {
     object = (GameObject*)dynamicObjects.at(i);
     object->move();
@@ -37,12 +31,6 @@ void PhysicsManager::handle_collissions() {
 
   GameObject* object1;
   GameObject* object2;
-
-  int local_i, local_j, local_n, local_m;
-  int my_rank = omp_get_thread_num();
-  int thread_count = omp_get_num_threads();
-
-  local_n = sizeDynamic / thread_count;
 
   for (i = 0; i < sizeStatic; i++) {
     object1 = (GameObject*)staticObjects.at(i);
@@ -78,22 +66,6 @@ void PhysicsManager::handle_collissions() {
               vel = object1->getVelocity();
               pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
               pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
-
-              // pos->setX(oldPos->getX());
-              // pos->setY(oldPos->getY());
-
-              vel->setX(-(vel->getX()));
-              vel->setY(-(vel->getY()));
-
-              oldPos = object2->getOldPosition();
-              pos = object2->getPosition();
-              vel = object2->getVelocity();
-              pos->setX(oldPos->getX() + (vel->getX() * properties->deltaTime * t));
-              pos->setY(oldPos->getY() + (vel->getY() * properties->deltaTime * t));
-
-              // pos->setX(oldPos->getX());
-              // pos->setY(oldPos->getY());
-
               vel->setX(-(vel->getX()));
               vel->setY(-(vel->getY()));
             }
